@@ -19,7 +19,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
-    private static final String TAG = "JJ_GYMLOG";
+    public static final String TAG = "JJ_GYMLOG";
     String mExercise = "";
     double mWeight = 0.0;
     int mReps = 0;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateDisplay() {
         String currentInfo = binding.logDisplayTextView.getText().toString();
-        String newDisplay = String.format(Locale.US, "Exercise:%s%nWeight:%.2f%nReps:%d%n=-=-=-=%n%s", mExercise, mWeight, mReps, currentInfo);
+        String newDisplay = String.format(Locale.US, "Exercise: %s%nWeight: %.2f%nReps: %d%n=-=-=-=%n%s", mExercise, mWeight, mReps, currentInfo);
         binding.logDisplayTextView.setText(newDisplay);
     }
 
