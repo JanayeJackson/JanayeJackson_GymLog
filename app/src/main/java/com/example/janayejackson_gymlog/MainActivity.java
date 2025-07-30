@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     String mExercise = "";
     double mWeight = 0.0;
     int mReps = 0;
+   //TODO: add logon information
+    int logonUserId = -1; // Assuming a default user ID for simplicity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +50,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        binding.exerciseInputEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateDisplay();
+            }
+        });
+
     }
 
    private void insertGymLogRecord(){
         if(mExercise.isEmpty()){
             return;
         }
-        GymLog log = new GymLog(mExercise, mWeight, mReps);
+        GymLog log = new GymLog(mExercise, mWeight, mReps, logonUserId);
         repository.insertGymLog(log);
    }
 
