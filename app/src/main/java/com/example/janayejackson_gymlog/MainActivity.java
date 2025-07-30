@@ -1,5 +1,7 @@
 package com.example.janayejackson_gymlog;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -21,6 +23,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String MAIN_ACTIVITY_USER_ID = "com.example.janayejackson_gymlog.MAIN_ACTIVITY_USER_ID";
     private ActivityMainBinding binding;
     private GymLogRepository repository;
     public static final String TAG = "JJ_GYMLOG";
@@ -28,13 +31,19 @@ public class MainActivity extends AppCompatActivity {
     double mWeight = 0.0;
     int mReps = 0;
    //TODO: add logon information
-    int logonUserId = -1; // Assuming a default user ID for simplicity
+    int loggedInUser = -1; // Assuming a default user ID for simplicity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        loginUser();
+        if(loggedInUser == -1){
+            Intent intent = LoginActivity.loginIntentFactory(getApplicationContext());
+            startActivity(intent);
+        }
 
         repository = GymLogRepository.getRepository(getApplication());
 
@@ -59,11 +68,20 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void loginUser(){
+        loggedInUser = getIntent().getIntExtra(MAIN_ACTIVITY_USER_ID, -1);
+    }
+
+    static Intent mainActivityIntentFactory(Context context, int userId){
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(MAIN_ACTIVITY_USER_ID, userId);
+        return intent;
+    }
    private void insertGymLogRecord(){
         if(mExercise.isEmpty()){
             return;
         }
-        GymLog log = new GymLog(mExercise, mWeight, mReps, logonUserId);
+        GymLog log = new GymLog(mExercise, mWeight, mReps, loggedInUser);
         repository.insertGymLog(log);
    }
 
