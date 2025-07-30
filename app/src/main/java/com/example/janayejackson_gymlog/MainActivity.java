@@ -103,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 showLogoutDialog();
-                logout();
                 return false;
             }
         });
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
         final AlertDialog alertDialog = alertBuilder.create();
         
-        alertDialog.setMessage("Logout?");
+        alertBuilder.setMessage("Logout?");
 
         alertBuilder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
             @Override
