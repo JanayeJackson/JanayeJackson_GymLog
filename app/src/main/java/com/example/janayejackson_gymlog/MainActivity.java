@@ -1,14 +1,22 @@
 package com.example.janayejackson_gymlog;
 
+import static android.app.ProgressDialog.show;
+
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -16,6 +24,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.janayejackson_gymlog.database.GymLogRepository;
 import com.example.janayejackson_gymlog.database.entities.GymLog;
+import com.example.janayejackson_gymlog.database.entities.User;
 import com.example.janayejackson_gymlog.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
@@ -31,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     double mWeight = 0.0;
     int mReps = 0;
    //TODO: add logon information
-    int loggedInUser = -1; // Assuming a default user ID for simplicity
+    private int loggedInUser = -1;
+    private User user;// Assuming a default user ID for simplicity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         loginUser();
+        invalidateOptionsMenu();
+
         if(loggedInUser == -1){
             Intent intent = LoginActivity.loginIntentFactory(getApplicationContext());
             startActivity(intent);
@@ -69,7 +81,61 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loginUser(){
+        //TODO: make functional
+        user = new User("janaye", "password");
         loggedInUser = getIntent().getIntExtra(MAIN_ACTIVITY_USER_ID, -1);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.logout_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.logoutMenuItem);
+        item.setVisible(true);
+        item.setTitle(user.getUsername());
+
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                showLogoutDialog();
+                logout();
+                return false;
+            }
+        });
+
+        return true;
+    }
+    private void showLogoutDialog(){
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
+        final AlertDialog alertDialog = alertBuilder.create();
+        
+        alertDialog.setMessage("Logout?");
+
+        alertBuilder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                logout();
+            }
+        });
+
+        alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                alertDialog.dismiss();
+            }
+        });
+
+        alertBuilder.create().show();
+    }
+
+    private void logout(){
+        //TODO: FInish logout
+        startActivity(LoginActivity.loginIntentFactory(getApplicationContext()));
     }
 
     static Intent mainActivityIntentFactory(Context context, int userId){
